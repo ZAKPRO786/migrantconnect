@@ -1,11 +1,8 @@
 services:
   - type: web
-    name: migrantconnect-backend
-    env: python
-    buildCommand: |
-      curl https://sh.rustup.rs -sSf | sh -s -- -y
-      source $HOME/.cargo/env
-      pip install -r requirements.txt
+    name: migrantconnect
+    runtime: python
+    buildCommand: pip install -r requirements.txt
     startCommand: gunicorn -b 0.0.0.0:8000 app:app
     envVars:
       - key: FLASK_ENV
