@@ -1,7 +1,101 @@
-# Ignore virtual environment
-.venv/
-venv/
+# ========================================
+# Python
+# ========================================
 
-# Python cache files
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.venv.bak/
+venv.bak/
+
+# Pip environment
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ========================================
+# Flask / Web stuff
+# ========================================
+
+# Flask instance folder (if you use one)
+instance/
+
+# Pytest / test cache
+.pytest_cache/
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# ========================================
+# IDEs / Editors
+# ========================================
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# ========================================
+# OS Files
+# ========================================
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ========================================
+# Other
+# ========================================
+
+# SQLite DB files (if generated locally)
+*.sqlite3
+*.db
+
+# Logs
+*.log
+
+# Local environment variables
+.env
+.env.*
+
+# Build / Dist
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
