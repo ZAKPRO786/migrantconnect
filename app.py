@@ -26,7 +26,10 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(INSTANCE_FOLDER, exist_ok=True)
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:5173/"])
+CORS(app, origins=[
+    "https://infosys-hackathon-arch-angel.vercel.app",
+    "http://localhost:5173"
+], supports_credentials=True)
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(INSTANCE_FOLDER, "migrantconnect.db")}'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
