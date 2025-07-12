@@ -117,7 +117,7 @@ def login():
 
     user = User.query.filter_by(phone=phone).first()
     if user and check_password_hash(user.password_hash, password):
-        return jsonify({'message': 'Login successful', 'user_id': user.id})
+        return jsonify({'message': 'Login successful', 'user_id': user.id, ' user_type':user.user_type})
     return jsonify({'error': 'Invalid credentials'}), 401
 
 # ----------------------------------------
