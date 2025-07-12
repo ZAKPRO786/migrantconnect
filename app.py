@@ -5,8 +5,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
-from transformers import pipeline
-from gtts import gTTS
+from gtts import gTTS  # Optional if you still want dummy TTS
 
 from models import db, User, Document
 
@@ -32,14 +31,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(INSTANCE_FOLDE
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 db.init_app(app)
-
-# ----------------------------------------
-# Translation & Whisper
-# ----------------------------------------
-translation_pipeline = pipeline("translation", model="facebook/nllb-200-distilled-600M")
-
-from faster_whisper import WhisperModel
-whisper_model = WhisperModel("base")
 
 # ----------------------------------------
 # DB: Create tables
@@ -196,62 +187,28 @@ def get_document(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 # ----------------------------------------
-# Translate text
+# Dummy Translate Text
 # ----------------------------------------
 @app.route('/api/translate', methods=['POST'])
 def translate_text():
     data = request.json
-    text = data.get('text')
-    src_lang = data.get('src_lang', 'eng_Latn')
-    tgt_lang = data.get('tgt_lang', 'hin')
-
-    if not text:
-        return jsonify({'error': 'No text provided'}), 400
-
-    translated = translation_pipeline(text, src_lang=src_lang, tgt_lang=f'{tgt_lang}_Deva')
-    translated_text = translated[0]['translation_text']
-
-    tts = gTTS(text=translated_text, lang=tgt_lang.split('_')[0])
-    speech_filename = f"{datetime.utcnow().strftime('%Y%m%d%H%M%S')}_speech.mp3"
-    speech_filepath = os.path.join(app.config['UPLOAD_FOLDER'], speech_filename)
-    tts.save(speech_filepath)
-
+    text = data.get('text', '')
     return jsonify({
-        'translated_text': translated_text,
-        'speech_url': f'/uploads/{speech_filename}'
+        'translated_text': f"Translated '{text}' to Hindi (dummy response)",
+        'speech_url': None
     })
 
 # ----------------------------------------
-# Voice-to-voice translate
+# Dummy Voice-to-Voice Translate
 # ----------------------------------------
 @app.route('/api/voice-translate', methods=['POST'])
 def voice_translate():
-    src_lang = request.form.get('src_lang', 'en')
-    tgt_lang = request.form.get('tgt_lang', 'hi')
-
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file provided'}), 400
-
-    audio = request.files['file']
-    filename = f"{datetime.utcnow().strftime('%Y%m%d%H%M%S')}_{audio.filename}"
-    audio_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    audio.save(audio_path)
-
-    segments, _ = whisper_model.transcribe(audio_path, language=src_lang)
-    original_text = ' '.join(segment.text for segment in segments)
-
-    translated = translation_pipeline(original_text, src_lang=f'{src_lang}_Latn', tgt_lang=f'{tgt_lang}_Deva')
-    translated_text = translated[0]['translation_text']
-
-    tts = gTTS(text=translated_text, lang=tgt_lang)
-    speech_filename = f"{datetime.utcnow().strftime('%Y%m%d%H%M%S')}_speech.mp3"
-    tts.save(os.path.join(app.config['UPLOAD_FOLDER'], speech_filename))
-
     return jsonify({
-        'original_text': original_text,
-        'translated_text': translated_text,
-        'speech_url': f'/uploads/{speech_filename}'
+        'original_text': 'Dummy original speech-to-text.',
+        'translated_text': 'Dummy translated speech.',
+        'speech_url': None
     })
+
 # ----------------------------------------
 # Dummy DigiLocker Verify
 # ----------------------------------------
@@ -260,36 +217,13 @@ def verify_digilocker():
     data = request.json
     doc_number = data.get('doc_number')
 
-    # Dummy check for demo
     if doc_number == "1234567890":
         result = {'verified': True, 'message': 'Document verified successfully via DigiLocker (dummy)'}
     else:
         result = {'verified': False, 'message': 'Document not found in DigiLocker (dummy)'}
 
     return jsonify(result)
-# ----------------------------------------
-# Find Nearby Amenities
-# ----------------------------------------
-import requests
 
-
-
-@app.route('/api/nearby', methods=['POST'])
-def get_nearby_places(lat, lon, amenity_type):
-    url = "https://nominatim.openstreetmap.org/search"
-    params = {
-        'q': f'{amenity_type} near {lat},{lon}',
-        'format': 'json',
-        'limit': 10
-    }
-    headers = {
-        'User-Agent': 'MigrantConnect/1.0 (your@email.com)'
-    }
-    response = requests.get(url, params=params, headers=headers)
-    return response.json()
-
-# Example:
-#print(get_nearby_places(12.9716, 77.5946, 'hospital'))
 # ----------------------------------------
 # BuddyConnect
 # ----------------------------------------
@@ -313,6 +247,7 @@ def buddy_connect(user_id):
     } for b in buddies]
 
     return jsonify({'buddies': buddy_list})
+
 # ----------------------------------------
 # State Legal Info (simple)
 # ----------------------------------------

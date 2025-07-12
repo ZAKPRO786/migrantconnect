@@ -26,13 +26,25 @@ pip-delete-this-directory.txt
 # Flask / Web stuff
 # ========================================
 
-# Flask instance folder (if you use one)
+# Flask instance folder (holds local SQLite DB)
 instance/
 
-# Pytest / test cache
-.pytest_cache/
+# Uploads folder (holds uploaded files)
+uploads/
 
-# Unit test / coverage reports
+# Local environment variables
+.env
+.env.*
+
+# SQLite DB files
+*.sqlite3
+*.db
+
+# ========================================
+# Tests / Coverage
+# ========================================
+
+.pytest_cache/
 htmlcov/
 .tox/
 .nox/
@@ -70,21 +82,9 @@ ehthumbs.db
 Desktop.ini
 
 # ========================================
-# Other
+# Build / Dist
 # ========================================
 
-# SQLite DB files (if generated locally)
-*.sqlite3
-*.db
-
-# Logs
-*.log
-
-# Local environment variables
-.env
-.env.*
-
-# Build / Dist
 build/
 develop-eggs/
 dist/
@@ -99,3 +99,6 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# Logs
+*.log
